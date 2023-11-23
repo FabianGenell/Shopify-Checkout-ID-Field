@@ -19479,6 +19479,12 @@ ${errorInfo.componentStack}`);
       this.name = "CheckoutUIExtensionError";
     }
   };
+  var ScopeNotGrantedError = class extends Error {
+    constructor(...args) {
+      super(...args);
+      this.name = "ScopeNotGrantedError";
+    }
+  };
   var ExtensionHasNoMethodError = class extends Error {
     constructor(method, target) {
       super(`Cannot call '${method}()' on target '${target}'. The corresponding property was not found on the API.`);
@@ -19586,6 +19592,31 @@ ${errorInfo.componentStack}`);
     return metafields.length ? metafields[0] : void 0;
   }
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/shipping-address.mjs
+  function useShippingAddress() {
+    const shippingAddress = useApi().shippingAddress;
+    if (!shippingAddress) {
+      throw new ScopeNotGrantedError("Using shipping address requires having shipping address permissions granted to your app.");
+    }
+    return useSubscription(shippingAddress);
+  }
+  function useApplyShippingAddressChange() {
+    const api = useApi();
+    if ("applyShippingAddressChange" in api) {
+      return api.applyShippingAddressChange;
+    }
+    throw new ExtensionHasNoMethodError("applyCartLinesChange", api.extension.target);
+  }
+
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/buyer-identity.mjs
+  function useCustomer() {
+    const buyerIdentity = useApi().buyerIdentity;
+    if (!buyerIdentity) {
+      throw new ScopeNotGrantedError("Using buyer identity requires having personal customer data permissions granted to your app.");
+    }
+    return useSubscription(buyerIdentity.customer);
+  }
+
   // extensions/dni-birthdate/src/Checkout.jsx
   var import_react15 = __toESM(require_react());
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
@@ -19594,34 +19625,40 @@ ${errorInfo.componentStack}`);
     () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
   );
   function Extension() {
+    const address = useShippingAddress();
+    const customer = useCustomer();
+    const [id, setId] = (0, import_react15.useState)(address.company || "");
     const canBlockProgress = useExtensionCapability("block_progress");
     const [validationError, setValidationError] = (0, import_react15.useState)("");
     const [hasRendered, setHasRendered] = (0, import_react15.useState)(false);
     const [validDate, setValidDate] = (0, import_react15.useState)("");
-    const dniMetafield = useMetafield({
-      namespace: "shipping",
-      key: "dni"
-    });
     const dateMetafield = useMetafield({
       namespace: "shipping",
       key: "birth_date"
     });
     const applyMetafieldsChange = useApplyMetafieldsChange();
+    const applyShippingAddressChange = useApplyShippingAddressChange();
     (0, import_react15.useEffect)(() => {
-      if (hasRendered && dniMetafield.value.length < 5) {
+      applyShippingAddressChange({
+        type: "updateShippingAddress",
+        address: {
+          company: id
+        }
+      });
+      if (hasRendered && id.length < 5) {
         setValidationError("Enter your ID Number");
       }
       setHasRendered(true);
-    }, [dniMetafield]);
+    }, [id]);
     useBuyerJourneyIntercept(({ canBlockProgress: canBlockProgress2 }) => {
       if (canBlockProgress2) {
-        if (dniMetafield.value.length < 5) {
+        if (id.length < 5) {
           return {
             behavior: "block",
             reason: "ID is required",
             perform: (result) => {
               if (result.behavior === "block") {
-                setDNIValidationError("Enter your ID Number");
+                setValidationError("Enter your ID Number");
               }
             }
           };
@@ -19637,44 +19674,40 @@ ${errorInfo.componentStack}`);
     function clearValidationErrors() {
       setValidationError("");
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockLayout2, { spacing: "base", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        TextField2,
-        {
-          value: dniMetafield == null ? void 0 : dniMetafield.value,
-          onChange: (value) => {
-            applyMetafieldsChange({
-              type: "updateMetafield",
-              namespace: "shipping",
-              key: "dni",
-              valueType: "string",
-              value
-            });
-          },
-          onInput: clearValidationErrors,
-          required: true,
-          error: validationError,
-          label: "DNI"
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        DateField2,
-        {
-          label: "Fecha de nacimiento",
-          onInvalid: () => setValidDate(false),
-          error: validDate && "Revisa la fecha",
-          onChange: (value) => {
-            applyMetafieldsChange({
-              type: "updateMetafield",
-              namespace: "shipping",
-              key: "birth_date",
-              valueType: "date",
-              value
-            });
+    if (!customer) {
+      return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockLayout2, { spacing: "base", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          TextField2,
+          {
+            value: id,
+            onChange: setId,
+            onInput: clearValidationErrors,
+            required: true,
+            error: validationError,
+            label: "NIF / CIF"
           }
-        }
-      )
-    ] }) });
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          DateField2,
+          {
+            value: dateMetafield == null ? void 0 : dateMetafield.value,
+            label: "Fecha de nacimiento (YYYY-MM-DD)",
+            onInvalid: () => setValidDate(false),
+            error: validDate && "Revisa la fecha",
+            onChange: (value) => {
+              applyMetafieldsChange({
+                type: "updateMetafield",
+                namespace: "shipping",
+                key: "birth_date",
+                valueType: "string",
+                value
+              });
+            }
+          }
+        )
+      ] }) });
+    }
+    return;
   }
 })();
 //# sourceMappingURL=dni-birthdate.js.map
