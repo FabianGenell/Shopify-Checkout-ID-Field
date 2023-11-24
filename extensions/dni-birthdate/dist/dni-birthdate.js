@@ -1161,7 +1161,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useCallback(callback, deps);
           }
-          function useMemo3(create, deps) {
+          function useMemo2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create, deps);
           }
@@ -1932,7 +1932,7 @@
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
-          exports.useMemo = useMemo3;
+          exports.useMemo = useMemo2;
           exports.useReducer = useReducer;
           exports.useRef = useRef3;
           exports.useState = useState3;
@@ -18402,10 +18402,10 @@
             }
           }
           var jsx5 = jsxWithValidationDynamic;
-          var jsxs2 = jsxWithValidationStatic;
+          var jsxs = jsxWithValidationStatic;
           exports.Fragment = REACT_FRAGMENT_TYPE;
           exports.jsx = jsx5;
-          exports.jsxs = jsxs2;
+          exports.jsxs = jsxs;
         })();
       }
     }
@@ -19121,12 +19121,6 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
-  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/BlockLayout/BlockLayout.mjs
-  var BlockLayout = createRemoteComponent("BlockLayout");
-
-  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/DateField/DateField.mjs
-  var DateField = createRemoteComponent("DateField");
-
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/TextField/TextField.mjs
   var TextField = createRemoteComponent("TextField");
 
@@ -19458,19 +19452,13 @@ ${errorInfo.componentStack}`);
     }
   };
 
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/BlockLayout/BlockLayout.mjs
-  var BlockLayout2 = createRemoteReactComponent(BlockLayout);
-
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/DateField/DateField.mjs
-  var DateField2 = createRemoteReactComponent(DateField);
-
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/TextField/TextField.mjs
   var TextField2 = createRemoteReactComponent(TextField, {
     fragmentProps: ["accessory"]
   });
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
-  var import_react11 = __toESM(require_react(), 1);
+  var import_react9 = __toESM(require_react(), 1);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/errors.mjs
   var CheckoutUIExtensionError = class extends Error {
@@ -19494,7 +19482,7 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react11.useContext)(ExtensionApiContext);
+    const api = (0, import_react9.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new CheckoutUIExtensionError("You can only call this hook when running as a UI extension.");
     }
@@ -19502,10 +19490,10 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/subscription.mjs
-  var import_react12 = __toESM(require_react(), 1);
+  var import_react10 = __toESM(require_react(), 1);
   function useSubscription(subscription) {
-    const [, setValue] = (0, import_react12.useState)(subscription.current);
-    (0, import_react12.useEffect)(() => {
+    const [, setValue] = (0, import_react10.useState)(subscription.current);
+    (0, import_react10.useEffect)(() => {
       let didUnsubscribe = false;
       const checkForUpdates = (newValue) => {
         if (didUnsubscribe) {
@@ -19532,64 +19520,21 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/buyer-journey.mjs
-  var import_react13 = __toESM(require_react(), 1);
+  var import_react11 = __toESM(require_react(), 1);
   function useBuyerJourneyIntercept(interceptor) {
     const api = useApi();
     if (!("buyerJourney" in api)) {
       throw new ExtensionHasNoMethodError("buyerJourney", api.extension.target);
     }
-    const interceptorRef = (0, import_react13.useRef)(interceptor);
+    const interceptorRef = (0, import_react11.useRef)(interceptor);
     interceptorRef.current = interceptor;
-    return (0, import_react13.useEffect)(() => {
+    return (0, import_react11.useEffect)(() => {
       const teardownPromise = api.buyerJourney.intercept((interceptorProps) => interceptorRef.current(interceptorProps));
       return () => {
         teardownPromise.then((teardown) => teardown()).catch(() => {
         });
       };
     }, [api.buyerJourney]);
-  }
-
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/metafields.mjs
-  var import_react14 = __toESM(require_react(), 1);
-  function useMetafields(filters) {
-    const metaFields = useSubscription(useApi().metafields);
-    return (0, import_react14.useMemo)(() => {
-      if (filters) {
-        const {
-          namespace,
-          key
-        } = filters;
-        if (!namespace) {
-          throw new CheckoutUIExtensionError("You must pass in a namespace with a key");
-        }
-        const filteredResults = metaFields.filter((metafield) => metafield.namespace === namespace && (!key || metafield.key === key));
-        return filteredResults;
-      }
-      return metaFields;
-    }, [filters, metaFields]);
-  }
-  function useApplyMetafieldsChange() {
-    const api = useApi();
-    if ("applyMetafieldChange" in api) {
-      return api.applyMetafieldChange;
-    }
-    throw new ExtensionHasNoMethodError("applyMetafieldChange", api.extension.target);
-  }
-
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/metafield.mjs
-  function useMetafield(filters) {
-    const {
-      namespace,
-      key
-    } = filters;
-    if (!namespace || !key) {
-      throw new CheckoutUIExtensionError("You must pass in both a namespace and key");
-    }
-    const metafields = useMetafields({
-      namespace,
-      key
-    });
-    return metafields.length ? metafields[0] : void 0;
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/shipping-address.mjs
@@ -19608,37 +19553,24 @@ ${errorInfo.componentStack}`);
     throw new ExtensionHasNoMethodError("applyCartLinesChange", api.extension.target);
   }
 
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/buyer-identity.mjs
-  function useCustomer() {
-    const buyerIdentity = useApi().buyerIdentity;
-    if (!buyerIdentity) {
-      throw new ScopeNotGrantedError("Using buyer identity requires having personal customer data permissions granted to your app.");
-    }
-    return useSubscription(buyerIdentity.customer);
-  }
-
   // extensions/dni-birthdate/src/Checkout.jsx
-  var import_react15 = __toESM(require_react());
+  var import_react12 = __toESM(require_react());
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
     "purchase.checkout.delivery-address.render-after",
     () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
   );
   function Extension() {
+    var _a;
     const address = useShippingAddress();
-    const customer = useCustomer();
-    const [id, setId] = (0, import_react15.useState)(address.company || "");
-    const canBlockProgress = useExtensionCapability("block_progress");
-    const [validationError, setValidationError] = (0, import_react15.useState)("");
-    const [hasRendered, setHasRendered] = (0, import_react15.useState)(false);
-    const [validDate, setValidDate] = (0, import_react15.useState)("");
-    const dateMetafield = useMetafield({
-      namespace: "shipping",
-      key: "birth_date"
-    });
-    const applyMetafieldsChange = useApplyMetafieldsChange();
+    const { cost } = useApi();
+    const required = ((_a = cost == null ? void 0 : cost.subtotalAmount) == null ? void 0 : _a.current.amount) > 3e3;
+    const label = required ? "NIF / CIF (obligatorio)" : "NIF / CIF (opcional)";
+    const [id, setId] = (0, import_react12.useState)(address.company || "");
+    const [validationError, setValidationError] = (0, import_react12.useState)("");
+    const [hasRendered, setHasRendered] = (0, import_react12.useState)(false);
     const applyShippingAddressChange = useApplyShippingAddressChange();
-    (0, import_react15.useEffect)(() => {
+    (0, import_react12.useEffect)(() => {
       applyShippingAddressChange({
         type: "updateShippingAddress",
         address: {
@@ -19646,19 +19578,20 @@ ${errorInfo.componentStack}`);
         }
       });
       if (hasRendered && id.length < 5) {
-        setValidationError("Enter your ID Number");
+        setValidationError("NIF / CIF esta obligatorio para pedidos mas de \u20AC3000");
       }
       setHasRendered(true);
     }, [id]);
+    const canBlockProgress = useExtensionCapability("block_progress");
     useBuyerJourneyIntercept(({ canBlockProgress: canBlockProgress2 }) => {
-      if (canBlockProgress2) {
+      if (canBlockProgress2 && required) {
         if (id.length < 5) {
           return {
             behavior: "block",
-            reason: "ID is required",
+            reason: "Note is required",
             perform: (result) => {
               if (result.behavior === "block") {
-                setValidationError("Enter your ID Number");
+                setValidationError("NIF / CIF esta obligatorio para pedidos mas de \u20AC3000");
               }
             }
           };
@@ -19674,40 +19607,17 @@ ${errorInfo.componentStack}`);
     function clearValidationErrors() {
       setValidationError("");
     }
-    if (!customer) {
-      return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockLayout2, { spacing: "base", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          TextField2,
-          {
-            value: id,
-            onChange: setId,
-            onInput: clearValidationErrors,
-            required: true,
-            error: validationError,
-            label: "NIF / CIF"
-          }
-        ),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          DateField2,
-          {
-            value: dateMetafield == null ? void 0 : dateMetafield.value,
-            label: "Fecha de nacimiento (YYYY-MM-DD)",
-            onInvalid: () => setValidDate(false),
-            error: validDate && "Revisa la fecha",
-            onChange: (value) => {
-              applyMetafieldsChange({
-                type: "updateMetafield",
-                namespace: "shipping",
-                key: "birth_date",
-                valueType: "string",
-                value
-              });
-            }
-          }
-        )
-      ] }) });
-    }
-    return;
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+      TextField2,
+      {
+        value: id,
+        onChange: setId,
+        onInput: clearValidationErrors,
+        required: true,
+        error: validationError,
+        label
+      }
+    ) });
   }
 })();
 //# sourceMappingURL=dni-birthdate.js.map
