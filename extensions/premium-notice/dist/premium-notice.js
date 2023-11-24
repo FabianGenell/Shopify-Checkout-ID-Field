@@ -1133,7 +1133,7 @@
             }
             return dispatcher.useContext(Context);
           }
-          function useState3(initialState) {
+          function useState2(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
@@ -1141,11 +1141,11 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer, initialArg, init);
           }
-          function useRef3(initialValue) {
+          function useRef2(initialValue) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect4(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1927,15 +1927,15 @@
           exports.useContext = useContext3;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect4;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
           exports.useMemo = useMemo2;
           exports.useReducer = useReducer;
-          exports.useRef = useRef3;
-          exports.useState = useState3;
+          exports.useRef = useRef2;
+          exports.useState = useState2;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2495,7 +2495,7 @@
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment2 = 7;
+          var Fragment = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -2635,7 +2635,7 @@
                 return "DehydratedFragment";
               case ForwardRef:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment2:
+              case Fragment:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -7053,7 +7053,7 @@
               }
             }
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment2) {
+              if (current2 === null || current2.tag !== Fragment) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -7456,7 +7456,7 @@
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment2) {
+                    if (child.tag === Fragment) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -11633,7 +11633,7 @@
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment2:
+              case Fragment:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -12074,7 +12074,7 @@
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment2:
+              case Fragment:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -16840,7 +16840,7 @@
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment2, elements, key, mode);
+            var fiber = createFiber(Fragment, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -19121,8 +19121,8 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
-  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/TextField/TextField.mjs
-  var TextField = createRemoteComponent("TextField");
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Banner/Banner.mjs
+  var Banner = createRemoteComponent("Banner");
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/render.mjs
   var import_react6 = __toESM(require_react(), 1);
@@ -19452,10 +19452,8 @@ ${errorInfo.componentStack}`);
     }
   };
 
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/TextField/TextField.mjs
-  var TextField2 = createRemoteReactComponent(TextField, {
-    fragmentProps: ["accessory"]
-  });
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Banner/Banner.mjs
+  var Banner2 = createRemoteReactComponent(Banner);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   var import_react9 = __toESM(require_react(), 1);
@@ -19465,18 +19463,6 @@ ${errorInfo.componentStack}`);
     constructor(...args) {
       super(...args);
       this.name = "CheckoutUIExtensionError";
-    }
-  };
-  var ScopeNotGrantedError = class extends Error {
-    constructor(...args) {
-      super(...args);
-      this.name = "ScopeNotGrantedError";
-    }
-  };
-  var ExtensionHasNoMethodError = class extends Error {
-    constructor(method, target) {
-      super(`Cannot call '${method}()' on target '${target}'. The corresponding property was not found on the API.`);
-      this.name = "ExtensionHasNoMethodError";
     }
   };
 
@@ -19511,120 +19497,22 @@ ${errorInfo.componentStack}`);
     return subscription.current;
   }
 
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/capabilities.mjs
-  function useExtensionCapabilities() {
-    return useSubscription(useApi().extension.capabilities);
-  }
-  function useExtensionCapability(capability) {
-    return useExtensionCapabilities().includes(capability);
-  }
-
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/buyer-journey.mjs
-  var import_react11 = __toESM(require_react(), 1);
-  function useBuyerJourneyIntercept(interceptor) {
-    const api = useApi();
-    if (!("buyerJourney" in api)) {
-      throw new ExtensionHasNoMethodError("buyerJourney", api.extension.target);
-    }
-    const interceptorRef = (0, import_react11.useRef)(interceptor);
-    interceptorRef.current = interceptor;
-    return (0, import_react11.useEffect)(() => {
-      const teardownPromise = api.buyerJourney.intercept((interceptorProps) => interceptorRef.current(interceptorProps));
-      return () => {
-        teardownPromise.then((teardown) => teardown()).catch(() => {
-        });
-      };
-    }, [api.buyerJourney]);
-  }
-
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/shipping-address.mjs
-  function useShippingAddress() {
-    const shippingAddress = useApi().shippingAddress;
-    if (!shippingAddress) {
-      throw new ScopeNotGrantedError("Using shipping address requires having shipping address permissions granted to your app.");
-    }
-    return useSubscription(shippingAddress);
-  }
-  function useApplyShippingAddressChange() {
-    const api = useApi();
-    if ("applyShippingAddressChange" in api) {
-      return api.applyShippingAddressChange;
-    }
-    throw new ExtensionHasNoMethodError("applyCartLinesChange", api.extension.target);
-  }
-
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/settings.mjs
   function useSettings() {
     const settings = useSubscription(useApi().settings);
     return settings;
   }
 
-  // extensions/dni-birthdate/src/Checkout.jsx
-  var import_react12 = __toESM(require_react());
+  // extensions/premium-notice/src/Checkout.jsx
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
-    "purchase.checkout.delivery-address.render-after",
+    "purchase.checkout.block.render",
     () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
   );
   function Extension() {
-    var _a;
-    const { error_message, field_name_obligatory, field_name_optional } = useSettings();
-    const address = useShippingAddress();
-    const { cost } = useApi();
-    const required = ((_a = cost == null ? void 0 : cost.subtotalAmount) == null ? void 0 : _a.current.amount) >= 3e3;
-    const label = required ? field_name_obligatory : field_name_optional;
-    const [id, setId] = (0, import_react12.useState)(address.company || "");
-    const [validationError, setValidationError] = (0, import_react12.useState)("");
-    const [hasRendered, setHasRendered] = (0, import_react12.useState)(false);
-    const applyShippingAddressChange = useApplyShippingAddressChange();
-    (0, import_react12.useEffect)(() => {
-      applyShippingAddressChange({
-        type: "updateShippingAddress",
-        address: {
-          company: id
-        }
-      });
-      if (hasRendered && id.length < 5) {
-        setValidationError(error_message);
-      }
-      setHasRendered(true);
-    }, [id]);
-    const canBlockProgress = useExtensionCapability("block_progress");
-    useBuyerJourneyIntercept(({ canBlockProgress: canBlockProgress2 }) => {
-      if (canBlockProgress2 && required) {
-        if (id.length < 5) {
-          return {
-            behavior: "block",
-            reason: "Note is required",
-            perform: (result) => {
-              if (result.behavior === "block") {
-                setValidationError(error_message);
-              }
-            }
-          };
-        }
-      }
-      return {
-        behavior: "allow",
-        perform: () => {
-          clearValidationErrors();
-        }
-      };
-    });
-    function clearValidationErrors() {
-      setValidationError("");
-    }
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-      TextField2,
-      {
-        value: id,
-        onChange: setId,
-        onInput: clearValidationErrors,
-        required: true,
-        error: validationError,
-        label
-      }
-    ) });
+    const { banner_title, banner_text } = useSettings();
+    const { extension: extension2 } = useApi();
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: banner_title, children: banner_text });
   }
 })();
-//# sourceMappingURL=dni-birthdate.js.map
+//# sourceMappingURL=premium-notice.js.map

@@ -7,8 +7,8 @@ api_version = "2023-10"
 
 [[extensions]]
 type = "ui_extension"
-name = "DNI & Birthdate"
-handle = "dni-birthdate"
+name = "premium-notice"
+handle = "premium-notice"
 
 # Controls where in Shopify your extension will be injected,
 # and the file that contains your extension’s source code. Learn more:
@@ -16,14 +16,12 @@ handle = "dni-birthdate"
 
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
-target = "purchase.checkout.delivery-address.render-after"
+target = "purchase.checkout.block.render"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#api-access
 api_access = true
-block_progress = true
-
 
 # Gives your extension access to make external network calls, using the
 # JavaScript `fetch()` API. Learn more:
@@ -33,13 +31,6 @@ block_progress = true
 # Loads metafields on checkout resources, including the cart,
 # products, customers, and more. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#metafields
-
-# [[extensions.metafields]]
-# namespace = "shipping"
-# key = "dni"
-# [[extensions.metafields]]
-# namespace = "shipping"
-# key = "birth_date"
 
 # [[extensions.metafields]]
 # namespace = "my_namespace"
@@ -54,17 +45,13 @@ block_progress = true
 
 [extensions.settings]
 [[extensions.settings.fields]]
-key = "error_message"
+key = "banner_title"
 type = "single_line_text_field"
-name = "Error message"
-description = "Enter a error message for when they havent enered a NIF and order is above 3000 euros"
+name = "Banner title"
+description = "Enter a title for the banner"
 
 [[extensions.settings.fields]]
-key = "field_name_obligatory"
-type = "single_line_text_field"
-name = "Name of field obligatory"
-
-[[extensions.settings.fields]]
-key = "field_name_optional"
-type = "single_line_text_field"
-name = "Name of field optional"
+key = "banner_text"
+type = "multi_line_text_field"
+name = "Banner text"
+description = "Enter a texrt for the banner"

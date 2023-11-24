@@ -1,5 +1,4 @@
 import {
-  Text,
   TextField,
   reactExtension,
   useShippingAddress,
@@ -7,6 +6,7 @@ import {
   useBuyerJourneyIntercept,
   useApplyShippingAddressChange,
   useApi,
+  useSettings
 } from '@shopify/ui-extensions-react/checkout';
 import { useEffect, useState } from 'react';
 
@@ -16,11 +16,14 @@ export default reactExtension(
 );
 
 function Extension() {
+
+  const { error_message, field_name_obligatory, field_name_optional } = useSettings();
+
   const address = useShippingAddress();
   const { cost } = useApi();
 
-  const required = cost?.subtotalAmount?.current.amount > 3000;
-  const label = required ? 'NIF / CIF (obligatorio)' : 'NIF / CIF (opcional)'
+  const required = cost?.subtotalAmount?.current.amount >= 3000;
+  const label = required ? field_name_obligatory : field_name_optional
 
   // Set up the app state
   const [id, setId] = useState(address.company || "");
@@ -39,7 +42,7 @@ function Extension() {
     });
 
     if (hasRendered && id.length < 5) {
-      setValidationError("NIF / CIF esta obligatorio para pedidos mas de €3000");
+      setValidationError(error_message);
     }
 
     setHasRendered(true)
@@ -57,7 +60,7 @@ function Extension() {
           perform: (result) => {
             // If progress can be blocked, then set a validation error on the custom field
             if (result.behavior === "block") {
-              setValidationError("NIF / CIF esta obligatorio para pedidos mas de €3000");
+              setValidationError(error_message);
             }
           },
         };
