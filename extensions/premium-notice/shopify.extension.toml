@@ -54,4 +54,16 @@ description = "Enter a title for the banner"
 key = "banner_text"
 type = "multi_line_text_field"
 name = "Banner text"
-description = "Enter a texrt for the banner"
+description = "Enter a text for the banner"
+
+[[extensions.settings.fields]]
+key = "link_text"
+type = "single_line_text_field"
+name = "Link text"
+description = "Enter a text for the link"
+
+[[extensions.settings.fields]]
+key = "link"
+type = "single_line_text_field"
+name = "Link"
+description = "Where should the link lead to?"
