@@ -15,8 +15,6 @@ function Extension() {
 
   const { banner_title, banner_text } = useSettings();
 
-  const { extension } = useApi();
-
   return (
     <Banner title={banner_title}>
       {banner_text}
