@@ -1,10 +1,9 @@
 import {
   Banner,
-  useApi,
-  useTranslate,
   reactExtension,
   useSettings,
-  Link
+  Button,
+  InlineLayout
 } from '@shopify/ui-extensions-react/checkout';
 
 export default reactExtension(
@@ -14,12 +13,19 @@ export default reactExtension(
 
 function Extension() {
 
-  const { banner_title, banner_text, link_text, link } = useSettings();
+  const {
+    banner_title,
+    banner_text = 'Recuerda hacerte del Club para conseguir los precios Premium',
+    link_text = 'Hazte premium',
+    link = 'https://textura-interiors-b2c.myshopify.com/pages/registro-premium'
+  } = useSettings();
 
   return (
     <Banner title={banner_title}>
-      {banner_text}
-      <Link to={link}>{link_text}</Link>
+      <InlineLayout spacing='base'>
+        {banner_text}
+        <Button to={link}>{link_text}</Button>
+      </InlineLayout>
     </Banner>
   );
 }

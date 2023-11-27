@@ -18402,10 +18402,10 @@
             }
           }
           var jsx5 = jsxWithValidationDynamic;
-          var jsxs = jsxWithValidationStatic;
+          var jsxs2 = jsxWithValidationStatic;
           exports.Fragment = REACT_FRAGMENT_TYPE;
           exports.jsx = jsx5;
-          exports.jsxs = jsxs;
+          exports.jsxs = jsxs2;
         })();
       }
     }
@@ -19121,6 +19121,12 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/BlockLayout/BlockLayout.mjs
+  var BlockLayout = createRemoteComponent("BlockLayout");
+
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Checkbox/Checkbox.mjs
+  var Checkbox = createRemoteComponent("Checkbox");
+
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/TextField/TextField.mjs
   var TextField = createRemoteComponent("TextField");
 
@@ -19452,13 +19458,19 @@ ${errorInfo.componentStack}`);
     }
   };
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/BlockLayout/BlockLayout.mjs
+  var BlockLayout2 = createRemoteReactComponent(BlockLayout);
+
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Checkbox/Checkbox.mjs
+  var Checkbox2 = createRemoteReactComponent(Checkbox);
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/TextField/TextField.mjs
   var TextField2 = createRemoteReactComponent(TextField, {
     fragmentProps: ["accessory"]
   });
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
-  var import_react9 = __toESM(require_react(), 1);
+  var import_react11 = __toESM(require_react(), 1);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/errors.mjs
   var CheckoutUIExtensionError = class extends Error {
@@ -19482,7 +19494,7 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react9.useContext)(ExtensionApiContext);
+    const api = (0, import_react11.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new CheckoutUIExtensionError("You can only call this hook when running as a UI extension.");
     }
@@ -19490,10 +19502,10 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/subscription.mjs
-  var import_react10 = __toESM(require_react(), 1);
+  var import_react12 = __toESM(require_react(), 1);
   function useSubscription(subscription) {
-    const [, setValue] = (0, import_react10.useState)(subscription.current);
-    (0, import_react10.useEffect)(() => {
+    const [, setValue] = (0, import_react12.useState)(subscription.current);
+    (0, import_react12.useEffect)(() => {
       let didUnsubscribe = false;
       const checkForUpdates = (newValue) => {
         if (didUnsubscribe) {
@@ -19520,15 +19532,15 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/buyer-journey.mjs
-  var import_react11 = __toESM(require_react(), 1);
+  var import_react13 = __toESM(require_react(), 1);
   function useBuyerJourneyIntercept(interceptor) {
     const api = useApi();
     if (!("buyerJourney" in api)) {
       throw new ExtensionHasNoMethodError("buyerJourney", api.extension.target);
     }
-    const interceptorRef = (0, import_react11.useRef)(interceptor);
+    const interceptorRef = (0, import_react13.useRef)(interceptor);
     interceptorRef.current = interceptor;
-    return (0, import_react11.useEffect)(() => {
+    return (0, import_react13.useEffect)(() => {
       const teardownPromise = api.buyerJourney.intercept((interceptorProps) => interceptorRef.current(interceptorProps));
       return () => {
         teardownPromise.then((teardown) => teardown()).catch(() => {
@@ -19560,24 +19572,30 @@ ${errorInfo.componentStack}`);
   }
 
   // extensions/dni-birthdate/src/Checkout.jsx
-  var import_react12 = __toESM(require_react());
+  var import_react14 = __toESM(require_react());
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
-    "purchase.checkout.delivery-address.render-after",
+    "purchase.checkout.block.render",
     () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
   );
   function Extension() {
     var _a;
-    const { error_message, field_name_obligatory, field_name_optional } = useSettings();
+    const {
+      error_message = "DNI /  CIF necesarrio",
+      field_name_obligatory = "DNI / CIF (obligatorio)",
+      field_name_optional = "DNI / CIF (opcional)",
+      is_company_text = "Soy empresa"
+    } = useSettings();
     const address = useShippingAddress();
     const { cost } = useApi();
-    const required = ((_a = cost == null ? void 0 : cost.subtotalAmount) == null ? void 0 : _a.current.amount) >= 3e3;
+    const [isCompany, setIsCompany] = (0, import_react14.useState)(address.company !== null);
+    const required = isCompany ? true : ((_a = cost == null ? void 0 : cost.subtotalAmount) == null ? void 0 : _a.current.amount) >= 3e3;
     const label = required ? field_name_obligatory : field_name_optional;
-    const [id, setId] = (0, import_react12.useState)(address.company || "");
-    const [validationError, setValidationError] = (0, import_react12.useState)("");
-    const [hasRendered, setHasRendered] = (0, import_react12.useState)(false);
+    const [id, setId] = (0, import_react14.useState)(address.company || "");
+    const [validationError, setValidationError] = (0, import_react14.useState)("");
+    const [hasRendered, setHasRendered] = (0, import_react14.useState)(false);
     const applyShippingAddressChange = useApplyShippingAddressChange();
-    (0, import_react12.useEffect)(() => {
+    (0, import_react14.useEffect)(() => {
       applyShippingAddressChange({
         type: "updateShippingAddress",
         address: {
@@ -19614,17 +19632,20 @@ ${errorInfo.componentStack}`);
     function clearValidationErrors() {
       setValidationError("");
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-      TextField2,
-      {
-        value: id,
-        onChange: setId,
-        onInput: clearValidationErrors,
-        required: true,
-        error: validationError,
-        label
-      }
-    ) });
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockLayout2, { spacing: "base", children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+        TextField2,
+        {
+          value: id,
+          onChange: setId,
+          onInput: clearValidationErrors,
+          required: true,
+          error: validationError,
+          label
+        }
+      ),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Checkbox2, { id: "checkbox", value: isCompany, onChange: setIsCompany, name: "checkbox", children: is_company_text })
+    ] }) });
   }
 })();
 //# sourceMappingURL=dni-birthdate.js.map

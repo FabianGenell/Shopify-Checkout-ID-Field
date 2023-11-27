@@ -16,7 +16,7 @@ handle = "dni-birthdate"
 
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
-target = "purchase.checkout.delivery-address.render-after"
+target = "purchase.checkout.block.render"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.
@@ -68,3 +68,8 @@ name = "Name of field obligatory"
 key = "field_name_optional"
 type = "single_line_text_field"
 name = "Name of field optional"
+
+[[extensions.settings.fields]]
+key = "is_company_text"
+type = "single_line_text_field"
+name = "Company required checkbox text"

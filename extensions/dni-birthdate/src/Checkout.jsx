@@ -6,23 +6,31 @@ import {
   useBuyerJourneyIntercept,
   useApplyShippingAddressChange,
   useApi,
-  useSettings
+  useSettings,
+  Checkbox,
+  BlockLayout
 } from '@shopify/ui-extensions-react/checkout';
 import { useEffect, useState } from 'react';
 
 export default reactExtension(
-  'purchase.checkout.delivery-address.render-after',
+  'purchase.checkout.block.render',
   () => <Extension />,
 );
 
 function Extension() {
 
-  const { error_message, field_name_obligatory, field_name_optional } = useSettings();
+  const {
+    error_message = "DNI /  CIF necesarrio",
+    field_name_obligatory = "DNI / CIF (obligatorio)",
+    field_name_optional = "DNI / CIF (opcional)",
+    is_company_text = "Soy empresa"
+  } = useSettings();
 
   const address = useShippingAddress();
   const { cost } = useApi();
 
-  const required = cost?.subtotalAmount?.current.amount >= 3000;
+  const [isCompany, setIsCompany] = useState(address.company !== null);
+  const required = isCompany ? true : cost?.subtotalAmount?.current.amount >= 3000;
   const label = required ? field_name_obligatory : field_name_optional
 
   // Set up the app state
@@ -80,14 +88,19 @@ function Extension() {
   }
 
   return (<>
-    <TextField
-      value={id}
-      onChange={setId}
-      onInput={clearValidationErrors}
-      required={true}
-      error={validationError}
-      label={label}>
-    </TextField>
+    <BlockLayout spacing='base'>
+      <TextField
+        value={id}
+        onChange={setId}
+        onInput={clearValidationErrors}
+        required={true}
+        error={validationError}
+        label={label}>
+      </TextField>
+      <Checkbox id="checkbox" value={isCompany} onChange={setIsCompany} name="checkbox">
+        {is_company_text}
+      </Checkbox>
+    </BlockLayout>
   </>
   );
 
