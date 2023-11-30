@@ -19479,6 +19479,12 @@ ${errorInfo.componentStack}`);
       this.name = "CheckoutUIExtensionError";
     }
   };
+  var ScopeNotGrantedError = class extends Error {
+    constructor(...args) {
+      super(...args);
+      this.name = "ScopeNotGrantedError";
+    }
+  };
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
@@ -19511,6 +19517,15 @@ ${errorInfo.componentStack}`);
     return subscription.current;
   }
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/buyer-identity.mjs
+  function useCustomer() {
+    const buyerIdentity = useApi().buyerIdentity;
+    if (!buyerIdentity) {
+      throw new ScopeNotGrantedError("Using buyer identity requires having personal customer data permissions granted to your app.");
+    }
+    return useSubscription(buyerIdentity.customer);
+  }
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/settings.mjs
   function useSettings() {
     const settings = useSubscription(useApi().settings);
@@ -19524,6 +19539,9 @@ ${errorInfo.componentStack}`);
     () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
   );
   function Extension() {
+    const customer = useCustomer();
+    if (customer)
+      return;
     const {
       banner_title,
       banner_text = "Recuerda hacerte del Club para conseguir los precios Premium",

@@ -29,7 +29,7 @@ function Extension() {
   const address = useShippingAddress();
   const { cost } = useApi();
 
-  const [isCompany, setIsCompany] = useState(address.company !== null);
+  const [isCompany, setIsCompany] = useState(address.company !== (null || undefined));
   const required = isCompany ? true : cost?.subtotalAmount?.current.amount >= 3000;
   const label = required ? field_name_obligatory : field_name_optional
 

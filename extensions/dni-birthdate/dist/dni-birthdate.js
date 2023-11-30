@@ -19588,7 +19588,7 @@ ${errorInfo.componentStack}`);
     } = useSettings();
     const address = useShippingAddress();
     const { cost } = useApi();
-    const [isCompany, setIsCompany] = (0, import_react14.useState)(address.company !== null);
+    const [isCompany, setIsCompany] = (0, import_react14.useState)(address.company !== void 0);
     const required = isCompany ? true : ((_a = cost == null ? void 0 : cost.subtotalAmount) == null ? void 0 : _a.current.amount) >= 3e3;
     const label = required ? field_name_obligatory : field_name_optional;
     const [id, setId] = (0, import_react14.useState)(address.company || "");
@@ -19648,4 +19648,3 @@ ${errorInfo.componentStack}`);
     ] }) });
   }
 })();
-//# sourceMappingURL=dni-birthdate.js.map

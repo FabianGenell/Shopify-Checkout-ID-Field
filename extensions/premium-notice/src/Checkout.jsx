@@ -3,7 +3,8 @@ import {
   reactExtension,
   useSettings,
   Button,
-  InlineLayout
+  InlineLayout,
+  useCustomer
 } from '@shopify/ui-extensions-react/checkout';
 
 export default reactExtension(
@@ -12,6 +13,9 @@ export default reactExtension(
 );
 
 function Extension() {
+  const customer = useCustomer();
+
+  if (customer) return
 
   const {
     banner_title,
